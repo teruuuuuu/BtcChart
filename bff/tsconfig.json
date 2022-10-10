@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "es2021",
+    "lib": ["dom", "es2021"],
+    "outDir": "./dist/",
+    "sourceMap": false,
+    "typeRoots": ["node_modules/@types", "@types"],
+    // 暗黙のanyを禁止
+    "noImplicitAny": true,
+
+    // ライブラリはチェック対象外
+    "skipLibCheck": true,
+
+    // ライブラリに型情報が含まれていなくてもエラーとしない
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+
+    "module": "NodeNext",
+    // jsのビルドを許可
+    "allowJs": true,
+    // モジュールの扱い
+    "moduleResolution": "node",
+    // jsonをインポート可能にする(moduleResolutionの指定が必要)
+    "resolveJsonModule": true,
+    // 厳密なチェックを有効にする
+    "strict": true,
+    // import時の大文字、小文字を分ける
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": [
+    "./src/**/*"
+  ],
+}
