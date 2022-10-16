@@ -1,6 +1,7 @@
 import {Rate} from './rate';
 
 import {createServer} from "http";
+import { OrderBook } from './OrderBook';
 const httpServer = createServer();
 
 const io = require("socket.io")(httpServer, {
@@ -23,4 +24,8 @@ httpServer.listen(445);
 
 export function pubRate(rate: Rate) {
     io.sockets.to("pub").emit("rate", rate);
+}
+
+export function pubOrderBook(orderbook: OrderBook) {
+    io.sockets.to("pub").emit("orderbook", orderbook);
 }

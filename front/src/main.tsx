@@ -1,69 +1,31 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 
 import './style.css';
 
-import { connect } from "socket.io-client";
-import { Rate } from './rate';
 
-const socket = connect("ws://localhost:445", {
-  reconnectionDelayMax: 10000,
-});
+import { OrderBookDataSource } from './OrderBookDataSource';
+import { OrderBook } from './OrderBook';
+import { WS} from './Ws';
+import { OrderBookViewGen} from './OrderBookView';
+import { MidHistroyGen} from './MidHistoryView';
 
-export const RateShowHook = (socket:any) => () => {
-    const [rate, setRate] = useState(new Rate("", 0, 0, 0, 0, 0, "", "", 0.0));
-    socket.on("rate", (data:any) => setRate(data));
-    return (
-        <div>
-            <h3>BTC RATE</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>channel</th>
-                        <th>ask</th>
-                        <th>bid</th>
-                        <th>high</th>
-                        <th>last</th>
-                        <th>low</th>
-                        <th>symbol</th>
-                        <th>timestamp</th>
-                        <th>volume</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{rate.channel}</td>
-                        <td>{rate.ask}</td>
-                        <td>{rate.bid}</td>
-                        <td>{rate.high}</td>
-                        <td>{rate.last}</td>
-                        <td>{rate.low}</td>
-                        <td>{rate.symbol}</td>
-                        <td>{rate.timestamp}</td>
-                        <td>{rate.volume}</td>
-                    </tr>
-                </tbody>
-            </table>
+const SOCKET_HOST = "ws://localhost:445";
+const ws = new WS(SOCKET_HOST);
+const orderBookDataSource: OrderBookDataSource = new OrderBookDataSource();
+ws.setOrderbookCallback((orderBook: OrderBook) => orderBookDataSource.update(orderBook));
+const OrderBookView = OrderBookViewGen(orderBookDataSource);
+const MidHistoryView = MidHistroyGen(orderBookDataSource);
+
+const Root = () => {
+    return <div>
+        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr"}}>
+            <OrderBookView />
+            <MidHistoryView />
         </div>
-    );
-};
-
-const RateShow = RateShowHook(socket);
-
-
-class Root extends React.Component {
-    constructor(props:any) {
-        super(props);
-    }
-
-    render() {
-        return (
-        <div>
-            <RateShow/>
-        </div>);
-
-    }
+    </div>
 }
 
 const root = ReactDOMClient.createRoot(document.getElementById('app')!);
 root.render(<Root />);
+
