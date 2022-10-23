@@ -1,5 +1,5 @@
 import { Socket, connect } from "socket.io-client";
-import { OrderBook } from "./OrderBook";
+import { OrderBook } from "./type/OrderBook";
 
 export class WS {
     uri: string;

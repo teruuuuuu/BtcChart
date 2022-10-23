@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
+import {useSelector} from 'react-redux';
+import { OrderBook } from "../type/OrderBook";
 
-import { OrderBook } from "./OrderBook";
-import { OrderBookDataSource } from "./OrderBookDataSource";
+import {RootState} from '../store/Store';
 
-export const OrderBookViewGen = (orderBookDataSource: OrderBookDataSource) => () => {
-    const [orderBook, setOrderBook] = React.useState<OrderBook|undefined>(undefined);
-    
-    React.useEffect(() => {
-        orderBookDataSource.addListener(setOrderBook);
-        return () => {orderBookDataSource.removeListener(setOrderBook)};
-    });
+export const OrderBookView = () => {
+    const orderBook = useSelector((state:RootState) => state.orderbook.data[0]);
     
     const show = (orderBook: OrderBook|undefined) => {
         if(!orderBook) {

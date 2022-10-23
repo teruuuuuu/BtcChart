@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: './src/main.tsx'
+    app: './src/Index.tsx'
   },
   module: {
     rules: [
@@ -15,7 +15,8 @@ module.exports = {
         // presetは.babelrcに記述
       },
       {
-        test: /\.tsx?$/,
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
         loader: "ts-loader",
         options: {
             configFile: 'tsconfig.json'

@@ -8,7 +8,10 @@
     "type-check": "tsc --noEmit",
     "tsc": "tsc -w",
     "esbuild": "esbuild ./src/main.ts --bundle --resolve-extensions=.ts,.js --outdir=dist --platform=node --external:./node_modules/* --target=node18.10",
-    "node": "node dist/main.js"
+    "node": "node dist/main.js",
+
+    "build": "tsc",
+    "dev": "tsc -w"
   },
   "author": "",
   "license": "ISC",
