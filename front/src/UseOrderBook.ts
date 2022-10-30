@@ -1,7 +1,7 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from './store/Store';
 
-import {updateOrderBook} from './slice/OrderBooksSlice';
+import {updateOrderBook, updateOrderBookHistory} from './slice/OrderBooksSlice';
 import { OrderBook } from './type/OrderBook';
 
 
@@ -10,7 +10,14 @@ export const useAppSelector: TypedUseSelectorHook<OrderBook> = useSelector;
 
 export function useOrdrBook() {
     const dispatch = useAppDispatch();
-    const updateFunc = (orderBook: OrderBook) => dispatch(updateOrderBook({data:orderBook}));
+    const updateFunc = (orderBook: OrderBook) => dispatch(updateOrderBook({current:orderBook}));
     return [updateFunc];
 }
+
+export function useOrdrBookHistory() {
+    const dispatch = useAppDispatch();
+    const updateFunc = (orderBookHistory: OrderBook[]) => dispatch(updateOrderBookHistory({history:orderBookHistory}));
+    return [updateFunc];
+}
+  
   

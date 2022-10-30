@@ -8,7 +8,7 @@ function timeTostring(date: Date) {
 }
 
 export const MidHistroyView = () => {
-    const orderBooks = useSelector((state:RootState) => state.orderbook.data.slice(0, 10));
+    const orderBooks = useSelector((state:RootState) => state.orderbook.history.slice(0, 10));
     
     const show = (orderBooks: OrderBook[]) => {
         if(!orderBooks) {

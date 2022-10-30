@@ -29,3 +29,7 @@ export function pubRate(rate: Rate) {
 export function pubOrderBook(orderbook: OrderBook) {
     io.sockets.to("pub").emit("orderbook", orderbook);
 }
+
+export function pubOrderBookHistory(orderbookHistory: OrderBook[]) {
+    io.sockets.to("pub").emit("orderbookhistory", orderbookHistory);
+}

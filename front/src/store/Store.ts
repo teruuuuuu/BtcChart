@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import orderBookSlice from '../slice/OrderBooksSlice'
+import {orderBookReducer} from '../slice/OrderBooksSlice'
 
 export const store = configureStore({
   reducer: {
-    orderbook: orderBookSlice,
+    orderbook: orderBookReducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false,

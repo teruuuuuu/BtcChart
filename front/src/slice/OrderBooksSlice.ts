@@ -2,17 +2,23 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OrderBook } from '../type/OrderBook'
 
 export interface OrderBookState {
-    data: Array<OrderBook>;
+    current: OrderBook | undefined;
+    history: Array<OrderBook>;
     maxSize: number;
 }
   
 const initialState: OrderBookState = {
-    data: [],
-    maxSize: 1000,
+    current: undefined,
+    history: [],
+    maxSize: 3600,
 };
 
 type UpdatePayload = {
-    data: OrderBook
+    current: OrderBook
+}
+
+type HistoryPayload = {
+    history: OrderBook[]
 }
   
 
@@ -21,12 +27,15 @@ export const oderBooksSlice = createSlice({
   initialState,
   reducers: {
     updateOrderBook: (state, action: PayloadAction<UpdatePayload>) => {
-        state.data = [action.payload.data].concat(state.data).slice(0, state.maxSize);
+        state.current = action.payload.current;
+    },
+    updateOrderBookHistory: (state, action: PayloadAction<HistoryPayload>) => {
+        state.history = action.payload.history;
     }
   },
-})
+});
 
-// Action creators are generated for each case reducer function
-export const { updateOrderBook } = oderBooksSlice.actions
 
-export default oderBooksSlice.reducer
+export const { updateOrderBook, updateOrderBookHistory } = oderBooksSlice.actions
+
+export const orderBookReducer = oderBooksSlice.reducer;

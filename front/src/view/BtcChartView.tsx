@@ -1,8 +1,5 @@
 
-import React from 'react';
-
 import {useSelector} from 'react-redux';
-import { OrderBook } from "../type/OrderBook";
 
 import {RootState} from '../store/Store';
 import { useElementSize } from 'usehooks-ts'
@@ -24,7 +21,7 @@ function timeX(chartWidth: number, chartX: number, startTime: Date, time: Date) 
 }
 
 function priceY(chartHeight: number, priceCenterY: number, priceWidth: number, priceCenter: number, price: number) {
-    return priceCenterY + (chartHeight / 2) * (price - priceCenter) / priceWidth;
+    return priceCenterY - (chartHeight / 2) * (price - priceCenter) / priceWidth;
 }
 
 function circleRend(upperLeft: Point, bottomRight: Point) {
@@ -43,8 +40,12 @@ function timeString(date: Date) {
 }
 
 export const BtcChartView = () => {
-    const orderBooks = useSelector((state:RootState) => state.orderbook.data.slice().reverse());
+    const now = new Date();
+    const startTime = new Date(now.getTime() - HOUR_MS);
+    const orderBooks = useSelector((state:RootState) => state.orderbook.history.filter(d => d.responsetime.getTime() >= startTime.getTime()));
     const [squareRef, elmRect] = useElementSize();
+
+    console.info(history);
 
     const svgWidth = Math.max(0, elmRect.width - 10);
     const svgHeight = elmRect.height;
@@ -60,8 +61,6 @@ export const BtcChartView = () => {
     const upperLeft = new Point(chartX, chartY);
     const bottomRight = new Point(chartX + chartWidth, chartY + chartHeight);
 
-    const now = new Date();
-    const startTime = new Date(now.getTime() - HOUR_MS);
     const lineTimeWithX: [Date,number][] = [1,2,3,4,5,6].map(i => {
         const time = new Date((startTime.getTime() - (startTime.getTime() % MIN_MS)) + i * MIN_MS);
         return [time, timeX(chartWidth, chartX, startTime, time)];
@@ -70,10 +69,10 @@ export const BtcChartView = () => {
     const priceCenterY = chartHeight / 2 + chartY;
     const priceCenter = orderBooks.length > 0 ? orderBooks[0].getMid() : 0;
 
-    const priceWidth = orderBooks.reduce((acc,cur) => Math.max(acc, Math.abs(cur.getMid() - priceCenter)), 0) * 2;
+    const priceWidth = orderBooks.reduce((acc,cur) => Math.max(acc, Math.abs(cur.getMid() - priceCenter)), 0) * 1.2;
     
-    const linePriceWithY: [number, number][] = priceWidth > 0 ? [-10, -5, 5, 10].map(p => {
-        const price = priceCenter + priceWidth * p / 10;
+    const linePriceWithY: [number, number][] = priceWidth > 0 ? [-20, -15, -10, -5, 5, 10, 15, 20].map(p => {
+        const price = priceCenter + priceWidth * p / 20;
         return [price, priceY(chartHeight, priceCenterY, priceWidth, priceCenter, price)];
     }) : [];
 

@@ -5,7 +5,7 @@ import { OrderBook } from "../type/OrderBook";
 import {RootState} from '../store/Store';
 
 export const OrderBookView = () => {
-    const orderBook = useSelector((state:RootState) => state.orderbook.data[0]);
+    const orderBook = useSelector((state:RootState) => state.orderbook.current);
     
     const show = (orderBook: OrderBook|undefined) => {
         if(!orderBook) {
