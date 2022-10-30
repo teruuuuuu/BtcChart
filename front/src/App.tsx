@@ -20,10 +20,14 @@ export const App = () => {
 
     return <React.StrictMode>
         <Provider store={store}>
-            <div style={{display: "grid", gridTemplateColumns: "1fr 1fr 1fr"}}>
-                <OrderBookView />
-                <MidHistroyView />
-                <BtcChartView />
+            <div style={{display: "grid", gridTemplateColumns: "1fr 300px"}}>
+                <div>
+                    <BtcChartView />
+                </div>
+                <div style={{display: "grid", gridTemplateRows: "auto auto"}}>
+                    <OrderBookView />
+                    <MidHistroyView />
+                </div>
             </div>
         </Provider>
     </React.StrictMode>

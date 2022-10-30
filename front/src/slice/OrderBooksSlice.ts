@@ -22,7 +22,6 @@ export const oderBooksSlice = createSlice({
   reducers: {
     updateOrderBook: (state, action: PayloadAction<UpdatePayload>) => {
         state.data = [action.payload.data].concat(state.data).slice(0, state.maxSize);
-        console.info(state.data);
     }
   },
 })
