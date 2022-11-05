@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Rate } from '../rate';
 import { OrderBook } from '../type/OrderBook'
+import { RateHistory, RateVal } from '../type/RateHistory';
 
 export interface OrderBookState {
     current: OrderBook | undefined;
-    history: Array<OrderBook>;
+    history: RateHistory;
     maxSize: number;
 }
   
 const initialState: OrderBookState = {
     current: undefined,
-    history: [],
+    history: new RateHistory("", []),
     maxSize: 3600,
 };
 
@@ -30,7 +32,10 @@ export const oderBooksSlice = createSlice({
         state.current = action.payload.current;
     },
     updateOrderBookHistory: (state, action: PayloadAction<HistoryPayload>) => {
-        state.history = action.payload.history;
+        if(action.payload.history.length > 0) {
+            const {history} = action.payload;
+            state.history = new RateHistory(history[0].data.symbol, history.map(d => new RateVal(d.getMid(), d.responsetime)));
+        }
     }
   },
 });

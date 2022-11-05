@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 import {store} from './store/Store';
 import { OrderBook } from './type/OrderBook';
 import { WS} from './Ws';
-import { OrderBookView} from './view/OrderBookView';
-import { MidHistroyView} from './view/MidHistoryView';
-import { BtcChartView } from './view/BtcChartView';
+import { BoardView} from './view/BoardView';
+import { HistroyView} from './view/HistoryView';
+import { ChartView } from './view/ChartView';
 
 import {useOrdrBook, useOrdrBookHistory} from './UseOrderBook';
 
@@ -25,11 +25,11 @@ export const App = () => {
         <Provider store={store}>
             <div style={{display: "grid", gridTemplateColumns: "1fr 300px"}}>
                 <div>
-                    <BtcChartView />
+                    <ChartView />
                 </div>
                 <div style={{display: "grid", gridTemplateRows: "auto auto"}}>
-                    <OrderBookView />
-                    <MidHistroyView />
+                    <BoardView />
+                    <HistroyView />
                 </div>
             </div>
         </Provider>
