@@ -17,7 +17,7 @@ export class OrderBook {
         return this.fromJson(orderbook);
     }
 
-    static fromJson(orderbook: any) {
+    static fromJson(orderbook: any): OrderBook {
         return new OrderBook(
             orderbook.status, 
             new OrderBookData(

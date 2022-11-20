@@ -6,12 +6,15 @@ import { AppController } from './app.controller';
 import { PriceModule } from './price.module';
 import {PriceService} from './price.service';
 import { TasksService } from './task.service';
+import { EventsModule } from './events.module';
+import { EventsGateway } from './events.gateway';
 
 @Module({
   imports: [
     HttpModule,
     ScheduleModule.forRoot(),
-    PriceModule
+    PriceModule,
+    EventsModule
   ],
   controllers: [],
   providers: [TasksService],

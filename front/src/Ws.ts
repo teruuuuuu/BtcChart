@@ -1,4 +1,4 @@
-import { Socket, connect } from "socket.io-client";
+import { io, Socket, connect } from "socket.io-client";
 import { OrderBook } from "./type/OrderBook";
 
 export class WS {
@@ -9,9 +9,7 @@ export class WS {
 
     constructor(uri: string) {
         this.uri = uri;
-        this.socket = connect(this.uri, {
-            reconnectionDelayMax: 10000,
-        });
+        this.socket = io("http://localhost:445");
 
         this.socket.on("orderbook", (data:any) => {
             if(this.orderbookCallback) {

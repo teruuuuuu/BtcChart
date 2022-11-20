@@ -1,6 +1,8 @@
-import {SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse, MessageBody, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
+import {SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse, MessageBody, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
 import { Injectable, Logger } from '@nestjs/common';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+
+import {OrderBook} from './orderbook';
   
 const WS_PORT = 445;
 
@@ -8,23 +10,37 @@ const WS_PORT = 445;
     cors: {
       origin: '*',
     },
-    namespace: 'socket.io'
 })
-export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
-
-    constructor(){}
+export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
     private readonly logger = new Logger(EventsGateway.name);
+    private sockets: Socket[] = [];
+
+    constructor(){
+        this.logger.debug("EventsGateway Start");
+    }
 
     @WebSocketServer()
     server: Server;
 
-    async handleConnection(client: any) {
-        this.logger.debug("connect");
+    sendOrderBook(orderbook:OrderBook) {
+        this.sockets.forEach(socket => {
+            socket.emit("orderbook", orderbook);
+        })
     }
 
-    async handleDisconnect() {
-        this.logger.debug("disconnect");
+    async afterInit(server: any) {
+        this.logger.debug("websocket init end");
+    }
+
+    async handleConnection(socket: Socket) {
+        this.logger.debug(`websocket connect: ${socket.id}`);
+        this.sockets = this.sockets.concat([socket]);
+    }
+
+    async handleDisconnect(socket: Socket) {
+        this.logger.debug(`websocket dissconnect: ${socket.id}`);
+        this.sockets = this.sockets.filter(s => s.id != socket.id);
     }
 
     @SubscribeMessage('message')

@@ -12,18 +12,16 @@ import { PriceService } from './price.service';
 import { PriceModule } from './price.module';
 import { TaskModule } from './task.module';
 
-import { EventsGateway } from './events.gateway';
-
 @Module({
   imports: [
     HttpModule,
     TypeOrmModule.forRoot({...DataConfig}),
-    // EventsModule,
+    EventsModule,
     PriceModule,
     TaskModule
   ],
   controllers: [AppController],
-  providers: [AppService, PriceService, EventsGateway],
+  providers: [AppService, PriceService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
