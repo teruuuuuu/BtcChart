@@ -3,6 +3,7 @@ import type { RootState, AppDispatch } from './store/Store';
 
 import {updateOrderBook, updateOrderBookHistory} from './slice/OrderBooksSlice';
 import { OrderBook } from './type/OrderBook';
+import { PriceInfo } from './type/PriceInfo';
 
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
@@ -16,7 +17,7 @@ export function useOrdrBook() {
 
 export function useOrdrBookHistory() {
     const dispatch = useAppDispatch();
-    const updateFunc = (orderBookHistory: OrderBook[]) => dispatch(updateOrderBookHistory({history:orderBookHistory}));
+    const updateFunc = (orderBookHistory: PriceInfo[]) => dispatch(updateOrderBookHistory({history:orderBookHistory}));
     return [updateFunc];
 }
   

@@ -9,7 +9,7 @@ function timeTostring(date: Date) {
 }
 
 export const HistroyView = () => {
-    const rateHistory = useSelector((state:RootState) => state.orderbook.history.rates.slice(-10).reverse());
+    const rateHistory = useSelector((state:RootState) => state.orderbook.history.slice(-10).reverse());
     
     return (
         <div>
@@ -19,7 +19,7 @@ export const HistroyView = () => {
                     <tr><th>timestamp</th><th>mid</th></tr>
                 </thead>
                 <tbody>
-                    {rateHistory.map((ob, index) => <tr key={index}><td>{timeTostring(ob.time)} </td><td>{ob.mid}</td></tr>)}
+                    {rateHistory.map((ob, index) => <tr key={index}><td>{timeTostring(ob.date)} </td><td>{ob.mid}</td></tr>)}
                 </tbody>
             </table>
         </div>

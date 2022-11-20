@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../store/Store';
 import { useElementSize } from 'usehooks-ts'
 
-import { RateHistory } from '../type/RateHistory';
+import { PriceInfo } from '../type/PriceInfo';
 
 const TEN_MIN_MS = 600000;
 const HOUR_MS = 3600000;
@@ -44,12 +44,12 @@ function timeString(date: Date) {
 export const ChartView = () => {
     const endTime = new Date();
     const startTime = new Date(endTime.getTime() - HOUR_MS);
-    
-    const orderBooks = useSelector((state:RootState) => state.orderbook.history.timeFilter(startTime, endTime));
+
+    const orderBooks = useSelector((state:RootState) => state.orderbook.history.filter(price => price.date.getTime() >= startTime.getTime() && price.date.getTime() <= endTime.getTime()));
     const timeProts: Date[] = [1,2,3,4,5,6].map(i => new Date((startTime.getTime() - (startTime.getTime() % TEN_MIN_MS)) + i * TEN_MIN_MS));
 
-    const priceCenter = orderBooks.rates.length > 0 ? orderBooks.rates[0].mid : 0;
-    const priceWidth = orderBooks.rates.reduce((acc,cur) => Math.max(acc, Math.abs(cur.mid - priceCenter)), 0) * 1.2;
+    const priceCenter = orderBooks.length > 0 ? orderBooks[0].mid : 0;
+    const priceWidth = orderBooks.reduce((acc,cur) => Math.max(acc, Math.abs(cur.mid - priceCenter)), 0) * 1.2;
     const priceTop = priceCenter + priceWidth;
     const priceBottom = priceCenter - priceWidth;
     const priceProtos = priceCenter == 0 ? [] : Array.from(Array(9)).map((_, i) => priceBottom + i * (priceTop - priceBottom)/8);
@@ -61,7 +61,7 @@ interface Props {
     startTime: Date;
     endTime: Date;
     timeProts: Date[];
-    orderBooks: RateHistory;
+    orderBooks: PriceInfo[];
     priceTop: number;
     priceBottom: number;
     priceProtos: number[];
@@ -91,19 +91,19 @@ const Chart = (props:Props) => {
 
     return (
         <div>
-            <div>{orderBooks.symbol} Chart</div>
+            <div>{orderBooks.length > 0 ? orderBooks[0].symbol : ""} Chart</div>
             <div ref={squareRef} style={{height: "500px"}}>
                 <svg x={0} y={0} width={svgWidth} height={svgHeight} style={{backgroundColor: "#000"}}>
                     {circleRend(upperLeft, bottomRight)}
 
-                    {lineTimeWithX.map(([_,x]) => <line key={x} x1={x} y1={upperLeft.y} x2={x} y2={bottomRight.y} strokeWidth={1} stroke="#fff" />)}
-                    {lineTimeWithX.map(([time,x]) => <text key={x} x={Math.min(bottomRight.x - 52, Math.max(0, x - 26))} y={bottomRight.y + 20} fontFamily="Verdana" fontSize={20} fill='#fff'>{timeString(time)}</text>)}
+                    {lineTimeWithX.map(([_,x], index) => <line key={index} x1={x} y1={upperLeft.y} x2={x} y2={bottomRight.y} strokeWidth={1} stroke="#fff" />)}
+                    {lineTimeWithX.map(([time,x], index) => <text key={index} x={Math.min(bottomRight.x - 52, Math.max(0, x - 26))} y={bottomRight.y + 20} fontFamily="Verdana" fontSize={20} fill='#fff'>{timeString(time)}</text>)}
 
-                    {linePriceWithY.map(([_,y]) => <line key={y} x1={upperLeft.x} y1={y} x2={bottomRight.x} y2={y} strokeWidth={1} stroke="#fff" ></line>)}
-                    {linePriceWithY.map(([price,y]) => <text key={y} x={bottomRight.x} y={Math.max(15, y+5)} fontFamily="Verdana" fontSize={15} fill='#fff'>{price}</text>)}
+                    {linePriceWithY.map(([_,y], index) => <line key={index} x1={upperLeft.x} y1={y} x2={bottomRight.x} y2={y} strokeWidth={1} stroke="#fff" ></line>)}
+                    {linePriceWithY.map(([price,y], index) => <text key={index} x={bottomRight.x} y={Math.max(15, y+5)} fontFamily="Verdana" fontSize={15} fill='#fff'>{price}</text>)}
 
-                    {priceTop > 0 ? Array.from(Array(orderBooks.rates.length - 1)).map((_,index) => 
-                        <line key={orderBooks.rates[index].time.getTime()} x1={timeX(chartWidth, chartX, startTime, endTime, orderBooks.rates[index].time)} y1={priceY(chartHeight, chartY, priceTop, priceBottom, orderBooks.rates[index].mid)} x2={timeX(chartWidth, chartX, startTime, endTime, orderBooks.rates[index+1].time)} y2={priceY(chartHeight, chartY, priceTop, priceBottom, orderBooks.rates[index+1].mid)} strokeWidth={1} stroke="#0f0" /> ): <></>}
+                    {priceTop > 0 ? Array.from(Array(orderBooks.length - 1)).map((_,index) => 
+                        <line key={index} x1={timeX(chartWidth, chartX, startTime, endTime, orderBooks[index].date)} y1={priceY(chartHeight, chartY, priceTop, priceBottom, orderBooks[index].mid)} x2={timeX(chartWidth, chartX, startTime, endTime, orderBooks[index+1].date)} y2={priceY(chartHeight, chartY, priceTop, priceBottom, orderBooks[index+1].mid)} strokeWidth={1} stroke="#0f0" /> ): <></>}
                 </svg>
             </div>
         </div>

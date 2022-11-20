@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 import {store} from './store/Store';
 import { OrderBook, OrderBookData, Price } from './type/OrderBook';
+import { PriceInfo } from './type/PriceInfo';
 import { WS} from './Ws';
 import { BoardView} from './view/BoardView';
 import { HistroyView} from './view/HistoryView';
@@ -33,8 +34,7 @@ export const App = () => {
                 },
             }).then(res => {
                 res.json().then(data => {
-                    const orderbooks = data.map((d:any) => new OrderBook(0, new OrderBookData([new Price(d.bid, 1)],[new Price(d.ask, 1)], d.symbol), new Date(Date.parse(d.date))));
-                    updateHistoryFunc(orderbooks);
+                    updateHistoryFunc(data.map((d:any) => new PriceInfo(d.symbol, d.bid, d.ask, new Date(Date.parse(d.date)))));
                 })
             });
         }, 1000);
